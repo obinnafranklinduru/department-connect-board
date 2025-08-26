@@ -1,7 +1,7 @@
 const User = require("../models/UserModel");
 const { verifyToken } = require("../utils/jwt-token");
 
-const auth = async (req, res, next) => {
+const protectAuth = async (req, res, next) => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
 
@@ -12,7 +12,7 @@ const auth = async (req, res, next) => {
     const decoded = verifyToken(token);
     const user = await User.findById(decoded.id).select("-password");
 
-    if (!user || !user.isActive) {
+    if (!user) {
       return res
         .status(401)
         .json({ message: "Invalid token or user deactivated" });
@@ -49,4 +49,4 @@ const studentAuth = (req, res, next) => {
   }
 };
 
-module.exports = { auth, adminAuth, studentAuth };
+module.exports = { protectAuth, adminAuth, studentAuth };

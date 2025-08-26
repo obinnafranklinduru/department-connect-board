@@ -7,8 +7,8 @@ const {
   updateOne,
 } = require("./FactoryController.js");
 
-export const getAllNotification = getAll(Notification);
-export const getSingleNotification = getOne(Notification);
-export const editNotification = updateOne(Notification);
-export const deleteNotification = deleteOne(Notification);
-export const uploadNotification = createOne(Notification);
+exports.getAllNotification = getAll(Notification);
+exports.getSingleNotification = getOne(Notification);
+exports.editNotification = updateOne(Notification);
+exports.deleteNotification = deleteOne(Notification);
+exports.uploadNotification = createOne(Notification);

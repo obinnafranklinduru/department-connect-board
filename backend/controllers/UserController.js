@@ -1,6 +1,5 @@
 const User = require("../models/UserModel");
 const {
-  createOne,
   deleteOne,
   getAll,
   getOne,
@@ -15,23 +14,22 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-export const getMe = (req, res, next) => {
+exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();
 };
 
-export const updateMe = async (req, res, next) => {
+exports.updateMe = async (req, res, next) => {
   try {
-    // 1) Create error if user POSTs password data
     if (req.body.password) {
       return next(
-        new AppError(
-          "This route is not for password updates. Please use /update-my-password.",
-          400
+        new Error(
+          "This route is not for password updates. Please use /update-my-password."
         )
       );
     }
-    // 2) Filtered out unwanted fields names that are not allowed to be updated
+
+    // Filter allowed fields
     const filteredBody = filterObj(
       req.body,
       "name",
@@ -40,13 +38,16 @@ export const updateMe = async (req, res, next) => {
       "gender",
       "regNo",
       "course",
-      "branch",
+      "department",
       "semester",
-      "role",
-      "profileImg"
+      "role"
     );
 
-    // 3) Update user document
+    // If file uploaded, add profileImg URL
+    if (req.file) {
+      filteredBody.profileImg = req.file.path; // Cloudinary URL
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
       filteredBody,
@@ -65,7 +66,7 @@ export const updateMe = async (req, res, next) => {
   }
 };
 
-export const getAllUsers = getAll(User);
-export const getUser = getOne(User);
-export const updateUser = updateOne(User);
-export const deleteUser = deleteOne(User);
+exports.getAllUsers = getAll(User);
+exports.getUser = getOne(User);
+exports.updateUser = updateOne(User);
+exports.deleteUser = deleteOne(User);

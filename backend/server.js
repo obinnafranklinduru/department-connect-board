@@ -61,6 +61,9 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.use("/api/", require("./routes/index"));
+
+
 // 404 handler
 app.use("*", (req, res) => {
   res.status(404).json({ message: "Route not found" });

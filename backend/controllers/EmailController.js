@@ -1,7 +1,7 @@
 import User from "../models/UserModel.js";
 import { sendEmailToMultiple } from "../utils/mailer.js";
 
-export const sendNoticeEmail = async (req, res, next) => {
+exports.sendNoticeEmail = async (req, res, next) => {
   try {
     console.log("from notice email");
     const notice = req.body;

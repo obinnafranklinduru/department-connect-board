@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
       default: "student",
     },
     regNo: {
-      type: Number,
+      type: String,
       sparse: true,
       unique: true,
     },
