@@ -1,4 +1,4 @@
-import Notification from "../models/NotificationModel.js";
+const Notification = require("../models/NotificationModel.js");
 const {
   createOne,
   deleteOne,

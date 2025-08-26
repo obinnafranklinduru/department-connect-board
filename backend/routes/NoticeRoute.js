@@ -1,24 +1,24 @@
-// const { Router } = require("express");
-// const { protectAuth, adminAuth } = require("../middleware/auth.js");
-// const {
-//   deleteNotice,
-//   editNotice,
-//   getAllNotice,
-//   getSingleNotice,
-//   uploadNotice,
-//   uploadNoticeImg,
-// } = require("./noticeController.js");
+const { Router } = require("express");
+const { protectAuth, adminAuth } = require("../middleware/auth.js");
+const { upload, handleUploadError } = require("../middleware/upload");
+const {
+  deleteNotice,
+  editNotice,
+  getAllNotice,
+  getSingleNotice,
+  uploadNotice,
+} = require("../controllers/NoticeController.js");
 
-// const router = Router();
+const router = Router();
 
-// router.get("/", getAllNotice);
+router.get("/", getAllNotice);
 
-// router.get("/:id", getSingleNotice);
+router.get("/:id", getSingleNotice);
 
-// //restrict to admin
-// router.use(protectAuth, adminAuth);
-// router.post("/", uploadNoticeImg, uploadNotice);
-// router.patch("/:id", uploadNoticeImg, editNotice);
-// router.delete("/:id", deleteNotice);
+//restrict to admin
+router.use(protectAuth, adminAuth);
+router.post("/", upload.single("imageUrl"), handleUploadError, uploadNotice);
+router.patch("/:id", upload.single("imageUrl"), handleUploadError, editNotice);
+router.delete("/:id", deleteNotice);
 
-// export default router;
+module.exports = router;

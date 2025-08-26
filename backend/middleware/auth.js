@@ -3,7 +3,18 @@ const { verifyToken } = require("../utils/jwt-token");
 
 const protectAuth = async (req, res, next) => {
   try {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+    let token;
+
+    if (req.cookies && req.cookies.jwt) token = req.cookies.jwt;
+
+    if (
+      !token &&
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer ")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    console.log("Auth token:", token);
 
     if (!token) {
       return res.status(401).json({ message: "Access token is required" });
@@ -28,7 +39,7 @@ const protectAuth = async (req, res, next) => {
 
 // Admin authorization middleware
 const adminAuth = (req, res, next) => {
-  if (req.user.role !== "admin" && req.user.role !== "lecturer") {
+  if (req.user.isAdmin !== true && req.user.role !== "lecturer") {
     return res.status(403).json({
       message: "Access denied. Admin or faculty privileges required.",
     });
@@ -38,11 +49,7 @@ const adminAuth = (req, res, next) => {
 
 // Student authorization middleware
 const studentAuth = (req, res, next) => {
-  if (
-    req.user.role === "student" ||
-    req.user.role === "admin" ||
-    req.user.role === "lecturer"
-  ) {
+  if (req.user.role === "student" || req.user.role === "lecturer") {
     next();
   } else {
     return res.status(403).json({ message: "Access denied" });

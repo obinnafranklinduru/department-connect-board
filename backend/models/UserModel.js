@@ -56,6 +56,10 @@ const userSchema = new mongoose.Schema(
       enum: ["Active", "Pending", "Blocked"],
       default: "Pending",
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
     password: {
       type: String,
       required: [true, "Password is required"],

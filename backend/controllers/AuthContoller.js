@@ -1,10 +1,6 @@
 const UserModel = require("../models/UserModel.js");
 const NotificationModel = require("../models/NotificationModel.js");
-const {
-  generateAccessToken,
-
-  verifyToken,
-} = require("../utils/jwt-token.js");
+const { generateAccessToken } = require("../utils/jwt-token.js");
 
 exports.register = async (req, res, next) => {
   try {
@@ -93,4 +89,36 @@ exports.logout = async (req, res) => {
     status: "success",
     message: "Logged out successfully",
   });
+};
+
+exports.updatePassword = async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.user._id).select("+password");
+
+    if (!user) return next(new Error("user not found"));
+
+    const { currentPassword, newPassword } = req.body;
+
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) return next(new Error("Your current password is wrong"));
+
+    user.password = newPassword;
+    await user.save();
+
+    const accessToken = generateAccessToken(user._id);
+
+    const days = Number(process.env.JWT_COOKIE_EXPIRES_IN) || 7;
+    res.cookie("jwt", accessToken, {
+      maxAge: days * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: req.secure || req.headers["x-forwarded-proto"] === "https",
+    });
+
+    res.json({
+      message: "Password updated successfully",
+      accessToken,
+    });
+  } catch (err) {
+    next(err);
+  }
 };

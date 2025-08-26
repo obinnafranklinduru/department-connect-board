@@ -1,19 +1,21 @@
-const { APIFeatures } = require("../utils/api-features");
+const APIFeatures = require("../utils/api-features");
 
 /**
  * Delete one document by ID
  */
 const deleteOne = (Model) => async (req, res, next) => {
   try {
-    const doc = await Model.findByIdAndDelete(req.params.id);
+    const result = await Model.deleteOne({ _id: req.params.id });
 
-    if (!doc) {
+    console.log(result);
+
+    if (result.deletedCount === 0) {
       return res
         .status(404)
         .json({ status: "fail", message: "No document found with that ID" });
     }
 
-    res.status(204);
+    res.status(204).send();
   } catch (err) {
     next(err);
   }
