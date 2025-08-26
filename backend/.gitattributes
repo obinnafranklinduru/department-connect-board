@@ -1,0 +1,38 @@
+# 1. Normalize line endings
+# Always use LF (Unix-style) inside the repo
+* text=auto eol=lf
+
+# Force CRLF for Windows batch scripts
+*.bat text eol=crlf
+
+# 2. Handle binary files (no diffs/merges)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+
+# 3. Mark common text files
+*.js   text
+*.ts   text
+*.json text
+*.css  text
+*.md   text
+*.html text
+
+# 4. Lock files (optional – comment out if unsure)
+# These settings avoid messy lockfile conflicts, but may mask dependency mismatches.
+# package-lock.json merge=ours
+# yarn.lock merge=ours
+
+# 5. Git LFS (uncomment if using LFS for large assets)
+# *.psd filter=lfs diff=lfs merge=lfs -text
+# *.mp4 filter=lfs diff=lfs merge=lfs -text
+# *.mov filter=lfs diff=lfs merge=lfs -text
+
+# 6. Ignore files in `git archive` exports
+.gitignore export-ignore
+.gitattributes export-ignore
